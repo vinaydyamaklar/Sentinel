@@ -37,10 +37,10 @@ export function DataGrid<T>({ data, columns, renderCell, onRowClick, rowKey }: D
   }
 
   return (
-    <div>
+    <div className='flex flex-col'>
       <div className='overflow-x-auto'>
         <table className='w-full'>
-          <thead>
+          <thead className='sticky top-0 z-10'>
             <tr className='bg-background border-b border-neutral/20'>
               {columns.map(col => (
                 <th
@@ -52,6 +52,11 @@ export function DataGrid<T>({ data, columns, renderCell, onRowClick, rowKey }: D
               ))}
             </tr>
           </thead>
+        </table>
+      </div>
+
+      <div className='overflow-y-auto max-h-[520px]'>
+        <table className='w-full'>
           <tbody>
             {visible.map((row, i) => (
               <tr

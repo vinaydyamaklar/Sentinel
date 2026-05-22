@@ -1,7 +1,5 @@
 import { useState, useMemo } from 'react'
 import { Badge } from '../atoms/Badge'
-import { SearchBar } from '../molecules/SearchBar'
-import { FilterDropdown } from '../molecules/FilterDropdown'
 import { DataGrid } from './DataGrid'
 import type { Client, RiskLevel, KYCStatus } from '../../types/client'
 
@@ -24,46 +22,28 @@ const kycVariant: Record<KYCStatus, 'success' | 'warning' | 'error' | 'neutral'>
 }
 
 const riskOptions = [
+  { label: 'All',    value: ''       },
   { label: 'High',   value: 'HIGH'   },
   { label: 'Medium', value: 'MEDIUM' },
   { label: 'Low',    value: 'LOW'    },
 ]
 
-const statusOptions = [
-  { label: 'Approved',              value: 'APPROVED'               },
-  { label: 'Pending',               value: 'PENDING'                },
-  { label: 'Rejected',              value: 'REJECTED'               },
-  { label: 'Enhanced Due Diligence', value: 'ENHANCED_DUE_DILIGENCE' },
+const columns = [
+  { key: 'clientId',           header: 'Client ID'  },
+  { key: 'clientName',         header: 'Name'        },
+  { key: 'branch',             header: 'Branch'      },
+  { key: 'onboardingDate',     header: 'Date'        },
+  { key: 'riskClassification', header: 'Risk'        },
+  { key: 'kycStatus',          header: 'KYC Status'  },
+  { key: 'recordStatus',       header: 'Record'      },
 ]
 
 export function ClientTable({ clients, onClientClick }: ClientTableProps) {
-  const [search, setSearch]         = useState('')
   const [riskFilter, setRiskFilter] = useState('')
-  const [kycFilter, setKycFilter]   = useState('')
 
-  const filtered = useMemo(() => {
-    return clients.filter(c => {
-      const matchesSearch = search === '' ||
-        c.clientName.toLowerCase().includes(search.toLowerCase()) ||
-        c.clientId.toLowerCase().includes(search.toLowerCase()) ||
-        c.relationshipManager.toLowerCase().includes(search.toLowerCase())
-
-      const matchesRisk = riskFilter === '' || c.riskClassification === riskFilter
-      const matchesKyc  = kycFilter  === '' || c.kycStatus === kycFilter
-
-      return matchesSearch && matchesRisk && matchesKyc
-    })
-  }, [clients, search, riskFilter, kycFilter])
-
-  const columns = [
-    { key: 'clientId',           header: 'Client ID'  },
-    { key: 'clientName',         header: 'Name'        },
-    { key: 'branch',             header: 'Branch'      },
-    { key: 'onboardingDate',     header: 'Date'        },
-    { key: 'riskClassification', header: 'Risk'        },
-    { key: 'kycStatus',          header: 'KYC Status'  },
-    { key: 'recordStatus',       header: 'Record'      },
-  ]
+  const filtered = useMemo(() =>
+    riskFilter ? clients.filter(c => c.riskClassification === riskFilter) : clients
+  , [clients, riskFilter])
 
   const renderCell = (key: string, client: Client) => {
     switch (key) {
@@ -92,12 +72,20 @@ export function ClientTable({ clients, onClientClick }: ClientTableProps) {
 
   return (
     <div className='bg-card rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.08)]'>
-      <div className='flex items-center gap-4 p-4 border-b border-neutral/20'>
-        <div className='flex-1'>
-          <SearchBar value={search} onChange={setSearch} />
-        </div>
-        <FilterDropdown label='Risk'   value={riskFilter} options={riskOptions}   onChange={setRiskFilter} />
-        <FilterDropdown label='Status' value={kycFilter}  options={statusOptions} onChange={setKycFilter}  />
+      <div className='flex items-center gap-2 p-4 border-b border-neutral/20'>
+        {riskOptions.map(opt => (
+          <button
+            key={opt.value}
+            onClick={() => setRiskFilter(opt.value)}
+            className={`px-4 py-2 rounded-full text-xs font-medium transition-colors min-h-[44px]
+              ${riskFilter === opt.value
+                ? 'bg-primary text-white'
+                : 'bg-background text-neutral hover:bg-neutral/10'
+              }`}
+          >
+            {opt.label}
+          </button>
+        ))}
       </div>
 
       <DataGrid

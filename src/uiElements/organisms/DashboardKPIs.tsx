@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { StatCard } from '../molecules/StatCard'
 import type { Client } from '../../types/client'
 
 interface DashboardKPIsProps {
@@ -15,11 +14,20 @@ export function DashboardKPIs({ clients }: DashboardKPIsProps) {
   }), [clients])
 
   return (
-    <div className='grid grid-cols-4 gap-4'>
-      <StatCard label='Total Clients' value={stats.total}  variant='default' />
-      <StatCard label='High Risk'     value={stats.high}   variant='error'   />
-      <StatCard label='Medium Risk'   value={stats.medium} variant='warning' />
-      <StatCard label='Low Risk'      value={stats.low}    variant='success' />
+    <div className='flex items-center gap-3'>
+      <Chip label='Total'  value={stats.total}  color='text-primary' />
+      <Chip label='High'   value={stats.high}   color='text-error'   />
+      <Chip label='Medium' value={stats.medium} color='text-warning' />
+      <Chip label='Low'    value={stats.low}    color='text-success' />
+    </div>
+  )
+}
+
+function Chip({ label, value, color }: { label: string; value: number; color: string }) {
+  return (
+    <div className='flex items-center gap-1.5 bg-card border border-neutral/20 rounded-full px-3 py-1 shadow-[0_1px_3px_rgba(0,0,0,0.08)]'>
+      <span className='text-xs text-neutral'>{label}:</span>
+      <span className={`text-xs font-bold ${color}`}>{value}</span>
     </div>
   )
 }

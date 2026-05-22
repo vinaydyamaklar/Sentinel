@@ -54,4 +54,4 @@ export const MEDIUM_RISK_FUND_SOURCES: SourceOfFunds[] = [
 
 export const STORAGE_KEY = 'sentinel_clients'
 
-export const DEFAULT_PAGE_SIZE = 50
+export const DEFAULT_PAGE_SIZE = 15

@@ -1,5 +1,4 @@
 import { Button } from '../atoms/Button'
-import { DEFAULT_PAGE_SIZE } from '../../lib/constants'
 
 interface PaginationProps {
   totalItems: number
@@ -11,27 +10,29 @@ interface PaginationProps {
 
 export function Pagination({ totalItems, currentPage, pageSize, onPageChange, onPageSizeChange }: PaginationProps) {
   const totalPages = Math.ceil(totalItems / pageSize)
-  const pageSizeOptions = [
-    { label: '25', value: '25' },
-    { label: '50', value: String(DEFAULT_PAGE_SIZE) },
-    { label: '100', value: '100' },
-  ]
 
   if (totalItems === 0) return null
+
+  const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = Math.min(Math.max(1, Number(e.target.value)), totalItems)
+    if (!isNaN(val)) {
+      onPageSizeChange(val)
+      onPageChange(1)
+    }
+  }
 
   return (
     <div className='flex items-center justify-between px-4 py-3 border-t border-neutral/20'>
       <div className='flex items-center gap-2 text-sm text-neutral'>
         <span>Rows per page:</span>
-        <select
+        <input
+          type='number'
+          min={1}
+          max={totalItems}
           value={pageSize}
-          onChange={e => { onPageSizeChange(Number(e.target.value)); onPageChange(1) }}
-          className='border border-neutral/40 rounded px-2 py-1 text-sm bg-card text-text min-h-[44px]'
-        >
-          {pageSizeOptions.map(o => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
+          onChange={handleSizeChange}
+          className='w-16 border border-neutral/40 rounded px-2 py-1 text-sm bg-card text-text text-center focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]'
+        />
         <span>{totalItems} total</span>
       </div>
 

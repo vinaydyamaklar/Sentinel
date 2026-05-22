@@ -1,14 +1,12 @@
 import { FilterDropdown } from '../molecules/FilterDropdown'
-import { Button } from '../atoms/Button'
 import { BRANCHES } from '../../lib/constants'
 
 interface AppHeaderProps {
   selectedBranch: string
   onBranchChange: (branch: string) => void
-  onNewClient: () => void
 }
 
-export function AppHeader({ selectedBranch, onBranchChange, onNewClient }: AppHeaderProps) {
+export function AppHeader({ selectedBranch, onBranchChange }: AppHeaderProps) {
   const branchOptions = BRANCHES.map(b => ({ label: b, value: b }))
 
   return (
@@ -18,16 +16,13 @@ export function AppHeader({ selectedBranch, onBranchChange, onNewClient }: AppHe
         <p className='text-xs font-normal text-neutral'>SENTINEL Onboarding</p>
       </div>
 
-      <div className='flex items-center gap-4'>
+      <div className='w-48'>
         <FilterDropdown
           label='Branches'
           value={selectedBranch}
           options={branchOptions}
           onChange={onBranchChange}
         />
-        <Button onClick={onNewClient}>
-          + New Client
-        </Button>
       </div>
     </header>
   )
