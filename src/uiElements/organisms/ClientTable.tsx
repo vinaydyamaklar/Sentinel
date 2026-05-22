@@ -72,20 +72,22 @@ export function ClientTable({ clients, onClientClick }: ClientTableProps) {
 
   return (
     <div className='bg-card rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.08)]'>
-      <div className='flex items-center gap-2 p-4 border-b border-neutral/20'>
-        {riskOptions.map(opt => (
-          <button
-            key={opt.value}
-            onClick={() => setRiskFilter(opt.value)}
-            className={`px-4 py-2 rounded-full text-xs font-medium transition-colors min-h-[44px]
-              ${riskFilter === opt.value
-                ? 'bg-primary text-white'
-                : 'bg-background text-neutral hover:bg-neutral/10'
-              }`}
-          >
-            {opt.label}
-          </button>
-        ))}
+      <div className='flex items-center p-4 border-b border-neutral/20'>
+        <div className='flex items-center bg-neutral/15 rounded-lg p-1 gap-0.5'>
+          {riskOptions.map(opt => (
+            <button
+              key={opt.value}
+              onClick={() => setRiskFilter(opt.value)}
+              className={`px-4 py-1 rounded-md text-xs font-medium transition-all
+                ${riskFilter === opt.value
+                  ? 'bg-primary text-white shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
+                  : 'text-neutral hover:text-text'
+                }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <DataGrid

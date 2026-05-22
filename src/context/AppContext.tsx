@@ -26,6 +26,21 @@ interface AppContextValue {
   handlers: AppHandlers
 }
 
+function getBranchFromURL(): string {
+  return new URLSearchParams(window.location.search).get('branch') ?? ''
+}
+
+function setBranchInURL(branch: string): void {
+  const params = new URLSearchParams(window.location.search)
+  if (branch) {
+    params.set('branch', branch)
+  } else {
+    params.delete('branch')
+  }
+  const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname
+  history.replaceState(null, '', newUrl)
+}
+
 const AppContext = createContext<AppContextValue | null>(null)
 
 export function useAppContext() {
@@ -38,9 +53,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [view, setView]                     = useState<View>('dashboard')
   const [clients, setClients]               = useState<Client[]>(loadClients)
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
-  const [selectedBranch, setSelectedBranch] = useState('')
+  const [selectedBranch, setSelectedBranch] = useState<string>(getBranchFromURL)
 
   const refreshClients = useCallback(() => setClients(loadClients()), [])
+
+  const handleBranchChange = useCallback((branch: string) => {
+    setSelectedBranch(branch)
+    setBranchInURL(branch)
+  }, [])
 
   const handlers: AppHandlers = {
     onUploadComplete: useCallback(() => {
@@ -66,7 +86,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setView('dashboard')
     }, []),
 
-    onBranchChange: useCallback((branch: string) => setSelectedBranch(branch), []),
+    onBranchChange: handleBranchChange,
   }
 
   const state: AppState = {
