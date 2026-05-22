@@ -1,15 +1,16 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { FormField } from '../molecules/FormField'
 import { Button } from '../atoms/Button'
 import { Badge } from '../atoms/Badge'
 import { assessRisk } from '../../lib/riskEngine'
-import { addClient } from '../../lib/storage'
-import { BRANCHES, SOURCE_OF_FUNDS, KYC_STATUSES } from '../../lib/constants'
+import { addClient, loadClients } from '../../lib/storage'
+import { BRANCHES, SOURCE_OF_FUNDS, KYC_STATUSES, COUNTRIES } from '../../lib/constants'
 import type { Client, ClientType, KYCStatus, SourceOfFunds, RiskLevel } from '../../types/client'
 
 interface NewClientFormProps {
   onSaved: () => void
   onCancel: () => void
+  defaultBranch?: string
 }
 
 type FormState = {
@@ -52,17 +53,31 @@ const riskVariant: Record<RiskLevel, 'error' | 'warning' | 'success'> = {
   HIGH: 'error', MEDIUM: 'warning', LOW: 'success',
 }
 
-const boolOptions = [
-  { label: 'Yes', value: 'TRUE'  },
-  { label: 'No',  value: 'FALSE' },
-]
 
-export function NewClientForm({ onSaved, onCancel }: NewClientFormProps) {
-  const [form, setForm]     = useState<FormState>(initialState)
+export function NewClientForm({ onSaved, onCancel, defaultBranch = '' }: NewClientFormProps) {
+  const [form, setForm]     = useState<FormState>({ ...initialState, branch: defaultBranch })
   const [errors, setErrors] = useState<Partial<FormState>>({})
+  const [rmManual, setRmManual] = useState(false)
+
+  const rmOptions = useMemo(() => {
+    if (!form.branch) return []
+    const names = Array.from(
+      new Set(
+        loadClients()
+          .filter(c => c.branch === form.branch && c.relationshipManager)
+          .map(c => c.relationshipManager)
+      )
+    )
+    return names.map(n => ({ label: n, value: n }))
+  }, [form.branch])
 
   const set = (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm(prev => ({ ...prev, [field]: e.target.value }))
+
+  const handleBranchChange = (branch: string) => {
+    setForm(prev => ({ ...prev, branch, relationshipManager: '' }))
+    setRmManual(false)
+  }
 
   const validate = (): boolean => {
     const e: Partial<FormState> = {}
@@ -143,64 +158,99 @@ export function NewClientForm({ onSaved, onCancel }: NewClientFormProps) {
           inputProps={{ value: form.clientName, onChange: set('clientName') }}
           error={errors.clientName} />
 
-        <FormField type='select' label='Branch' required
+        <FormField type='dropdown' label='Branch' required
           options={BRANCHES.map(b => ({ label: b, value: b }))}
-          selectProps={{ value: form.branch, onChange: set('branch') }}
+          value={form.branch}
+          onChange={handleBranchChange}
           error={errors.branch} />
 
         <FormField type='input' label='Onboarding Date' required
           inputProps={{ type: 'date', value: form.onboardingDate, onChange: set('onboardingDate') }}
           error={errors.onboardingDate} />
 
-        <FormField type='input' label='Relationship Manager' required
-          inputProps={{ value: form.relationshipManager, onChange: set('relationshipManager') }}
-          error={errors.relationshipManager} />
+        {rmOptions.length > 0 && !rmManual ? (
+          <div className='flex flex-col gap-1'>
+            <FormField type='dropdown' label='Relationship Manager' required
+              options={[...rmOptions, { label: 'Other…', value: '__other__' }]}
+              value={form.relationshipManager}
+              onChange={v => {
+                if (v === '__other__') {
+                  setRmManual(true)
+                  setForm(prev => ({ ...prev, relationshipManager: '' }))
+                } else {
+                  setForm(prev => ({ ...prev, relationshipManager: v }))
+                }
+              }}
+              error={errors.relationshipManager} />
+          </div>
+        ) : (
+          <div className='flex flex-col gap-1'>
+            <FormField type='input' label='Relationship Manager' required
+              inputProps={{ value: form.relationshipManager, onChange: set('relationshipManager'), placeholder: 'Enter name' }}
+              error={errors.relationshipManager} />
+            {rmOptions.length > 0 && (
+              <button
+                type='button'
+                onClick={() => { setRmManual(false); setForm(prev => ({ ...prev, relationshipManager: '' })) }}
+                className='text-xs text-primary hover:underline text-left'
+              >
+                ← Pick from existing
+              </button>
+            )}
+          </div>
+        )}
 
-        <FormField type='select' label='Client Type' required
+        <FormField type='dropdown' label='Client Type' required
           options={[{ label: 'Individual', value: 'INDIVIDUAL' }, { label: 'Entity', value: 'ENTITY' }]}
-          selectProps={{ value: form.clientType, onChange: set('clientType') }}
+          value={form.clientType}
+          onChange={v => setForm(prev => ({ ...prev, clientType: v }))}
           error={errors.clientType} />
 
-        <FormField type='input' label='Country of Tax Residence' required
-          inputProps={{ value: form.countryOfTaxResidence, onChange: set('countryOfTaxResidence') }}
+        <FormField type='combobox' label='Country of Tax Residence' required
+          options={COUNTRIES}
+          value={form.countryOfTaxResidence}
+          onChange={v => setForm(prev => ({ ...prev, countryOfTaxResidence: v }))}
+          placeholder='Search country...'
           error={errors.countryOfTaxResidence} />
 
         <FormField type='input' label='Annual Income (£)' required
           inputProps={{ type: 'number', value: form.annualIncome, onChange: set('annualIncome') }}
           error={errors.annualIncome} />
 
-        <FormField type='select' label='Source of Funds' required
+        <FormField type='dropdown' label='Source of Funds' required
           options={SOURCE_OF_FUNDS.map(s => ({ label: s, value: s }))}
-          selectProps={{ value: form.sourceOfFunds, onChange: set('sourceOfFunds') }}
+          value={form.sourceOfFunds}
+          onChange={v => setForm(prev => ({ ...prev, sourceOfFunds: v }))}
           error={errors.sourceOfFunds} />
 
-        <FormField type='select' label='PEP Status' required
-          options={boolOptions}
-          selectProps={{ value: form.pepStatus, onChange: set('pepStatus') }}
+        <FormField type='toggle' label='PEP Status' required
+          value={form.pepStatus}
+          onChange={v => setForm(prev => ({ ...prev, pepStatus: v }))}
           error={errors.pepStatus} />
 
-        <FormField type='select' label='Sanctions Screening Match' required
-          options={boolOptions}
-          selectProps={{ value: form.sanctionsScreeningMatch, onChange: set('sanctionsScreeningMatch') }}
+        <FormField type='toggle' label='Sanctions Screening Match' required
+          value={form.sanctionsScreeningMatch}
+          onChange={v => setForm(prev => ({ ...prev, sanctionsScreeningMatch: v }))}
           error={errors.sanctionsScreeningMatch} />
 
-        <FormField type='select' label='Adverse Media Flag' required
-          options={boolOptions}
-          selectProps={{ value: form.adverseMediaFlag, onChange: set('adverseMediaFlag') }}
+        <FormField type='toggle' label='Adverse Media Flag' required
+          value={form.adverseMediaFlag}
+          onChange={v => setForm(prev => ({ ...prev, adverseMediaFlag: v }))}
           error={errors.adverseMediaFlag} />
 
-        <FormField type='select' label='KYC Status' required
+        <FormField type='dropdown' label='KYC Status' required
           options={KYC_STATUSES.map(s => ({ label: s.replace(/_/g, ' '), value: s }))}
-          selectProps={{ value: form.kycStatus, onChange: set('kycStatus') }}
+          value={form.kycStatus}
+          onChange={v => setForm(prev => ({ ...prev, kycStatus: v }))}
           error={errors.kycStatus} />
 
         <FormField type='input' label='ID Verification Date'
           inputProps={{ type: 'date', value: form.idVerificationDate, onChange: set('idVerificationDate') }}
           error={errors.idVerificationDate} />
 
-        <FormField type='select' label='Documentation Complete' required
-          options={boolOptions}
-          selectProps={{ value: form.documentationComplete, onChange: set('documentationComplete') }}
+        <FormField type='toggle' label='Documentation Complete' required
+          value={form.documentationComplete}
+          onChange={v => setForm(prev => ({ ...prev, documentationComplete: v }))}
           error={errors.documentationComplete} />
 
       </div>

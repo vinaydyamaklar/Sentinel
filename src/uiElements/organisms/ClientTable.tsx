@@ -79,7 +79,7 @@ export function ClientTable({ clients, onClientClick }: ClientTableProps) {
   return (
     <div className='bg-card rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.08)]'>
       <div className='flex flex-col items-start gap-1.5 p-4 border-b border-neutral/20'>
-        <span className='text-xs text-neutral font-medium uppercase tracking-wide'>Filter by Risk</span>
+        <span className='text-xs text-neutral font-medium uppercase tracking-wide'>Risk Filter</span>
         <div className='flex items-center bg-neutral/15 rounded-lg p-1 gap-0.5'>
           {riskOptions.map(opt => (
             <button

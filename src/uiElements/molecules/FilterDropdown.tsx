@@ -15,6 +15,7 @@ export function FilterDropdown({ label, value, options, onChange }: FilterDropdo
       value={value}
       options={allOptions}
       onChange={onChange}
+      variant='dark'
     />
   )
 }

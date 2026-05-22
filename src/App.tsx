@@ -69,7 +69,7 @@ export default function App() {
           title='New Client Assessment'
           onClose={onCloseNewClient}
         >
-          <NewClientForm onSaved={onNewClientSaved} onCancel={onCloseNewClient} />
+          <NewClientForm onSaved={onNewClientSaved} onCancel={onCloseNewClient} defaultBranch={selectedBranch} />
         </Modal>
       )}
     </div>

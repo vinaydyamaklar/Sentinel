@@ -1,6 +1,9 @@
 import { Label } from '../atoms/Label'
 import { Input } from '../atoms/Input'
 import { Select } from '../atoms/Select'
+import { Dropdown } from '../atoms/Dropdown'
+import { ToggleField } from '../atoms/ToggleField'
+import { ComboBox } from '../atoms/ComboBox'
 
 interface BaseProps {
   label: string
@@ -19,7 +22,28 @@ interface SelectFieldProps extends BaseProps {
   selectProps: React.SelectHTMLAttributes<HTMLSelectElement>
 }
 
-type FormFieldProps = InputFieldProps | SelectFieldProps
+interface DropdownFieldProps extends BaseProps {
+  type: 'dropdown'
+  options: { label: string; value: string }[]
+  value: string
+  onChange: (value: string) => void
+}
+
+interface ToggleFieldProps extends BaseProps {
+  type: 'toggle'
+  value: string
+  onChange: (value: string) => void
+}
+
+interface ComboBoxFieldProps extends BaseProps {
+  type: 'combobox'
+  options: string[]
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
+}
+
+type FormFieldProps = InputFieldProps | SelectFieldProps | DropdownFieldProps | ToggleFieldProps | ComboBoxFieldProps
 
 export function FormField(props: FormFieldProps) {
   const { label, required, error } = props
@@ -29,6 +53,18 @@ export function FormField(props: FormFieldProps) {
       <Label required={required}>{label}</Label>
       {props.type === 'input' ? (
         <Input error={!!error} {...props.inputProps} />
+      ) : props.type === 'dropdown' ? (
+        <Dropdown
+          value={props.value}
+          options={props.options}
+          onChange={props.onChange}
+          variant='light'
+          error={!!error}
+        />
+      ) : props.type === 'toggle' ? (
+        <ToggleField value={props.value} onChange={props.onChange} error={!!error} />
+      ) : props.type === 'combobox' ? (
+        <ComboBox value={props.value} options={props.options} onChange={props.onChange} placeholder={props.placeholder} error={!!error} />
       ) : (
         <Select error={!!error} options={props.options} {...props.selectProps} />
       )}
