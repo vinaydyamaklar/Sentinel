@@ -78,6 +78,23 @@ export const COUNTRIES = [
   'Yemen','Zambia','Zimbabwe',
 ]
 
+export const FIELD_LABELS: Record<string, string> = {
+  client_id:                  'Client ID',
+  branch:                     'Branch',
+  onboarding_date:            'Onboarding Date',
+  client_name:                'Full Name',
+  client_type:                'Client Type',
+  country_of_tax_residence:   'Country of Tax Residence',
+  annual_income:              'Annual Income',
+  source_of_funds:            'Source of Funds',
+  pep_status:                 'PEP Status',
+  sanctions_screening_match:  'Sanctions Screening Match',
+  adverse_media_flag:         'Adverse Media Flag',
+  kyc_status:                 'KYC Status',
+  documentation_complete:     'Documentation Complete',
+  relationship_manager:       'Relationship Manager',
+}
+
 export const STORAGE_KEY = 'sentinel_clients'
 
 export const DEFAULT_PAGE_SIZE = 15

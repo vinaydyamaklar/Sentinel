@@ -171,7 +171,7 @@ export function NewClientForm({ onSaved, onCancel, defaultBranch = '' }: NewClie
         {rmOptions.length > 0 && !rmManual ? (
           <div className='flex flex-col gap-1'>
             <FormField type='dropdown' label='Relationship Manager' required
-              options={[...rmOptions, { label: 'Other…', value: '__other__' }]}
+              options={[...rmOptions, { label: 'Other', value: '__other__' }]}
               value={form.relationshipManager}
               onChange={v => {
                 if (v === '__other__') {

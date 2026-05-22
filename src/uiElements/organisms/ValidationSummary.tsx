@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Badge } from '../atoms/Badge'
 import { Button } from '../atoms/Button'
+import { FIELD_LABELS } from '../../lib/constants'
 import type { Client } from '../../types/client'
 
 interface ValidationSummaryProps {
@@ -32,17 +33,17 @@ export function ValidationSummary({ clients, onContinue }: ValidationSummaryProp
       {incomplete.length > 0 && (
         <div className='border border-warning/30 rounded-lg overflow-hidden'>
           <div className='bg-warning/10 px-4 py-2 border-b border-warning/20'>
-            <p className='text-xs font-medium text-text'>Incomplete Records — Missing Fields</p>
+            <p className='text-xs font-medium text-text'>Incomplete Records - Missing Fields</p>
           </div>
           <div className='divide-y divide-neutral/10 max-h-64 overflow-y-auto'>
             {incomplete.map(c => (
               <div key={c.clientId} className='px-4 py-3 flex items-start gap-4'>
-                <span className='text-xs font-medium text-text w-24 shrink-0'>{c.clientId || '—'}</span>
+                <span className='text-xs font-medium text-text w-24 shrink-0'>{c.clientId || '-'}</span>
                 <span className='text-xs text-neutral'>{c.clientName || 'Unknown'}</span>
                 <div className='flex flex-wrap gap-1 ml-auto'>
                   {c.missingFields.map(field => (
                     <span key={field} className='text-xs bg-error/10 text-error px-2 py-0.5 rounded'>
-                      {field}
+                      {FIELD_LABELS[field] ?? field}
                     </span>
                   ))}
                 </div>

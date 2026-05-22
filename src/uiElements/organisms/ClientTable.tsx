@@ -50,12 +50,12 @@ export function ClientTable({ clients, onClientClick }: ClientTableProps) {
       case 'riskClassification':
         return client.riskClassification
           ? <Badge label={client.riskClassification} variant={riskVariant[client.riskClassification]} />
-          : <span className='text-neutral text-xs'>—</span>
+          : <span className='text-neutral text-xs'>-</span>
 
       case 'kycStatus':
         return client.kycStatus
           ? <Badge label={client.kycStatus.replace(/_/g, ' ')} variant={kycVariant[client.kycStatus]} />
-          : <span className='text-neutral text-xs'>—</span>
+          : <span className='text-neutral text-xs'>-</span>
 
       case 'recordStatus':
         return (
@@ -66,7 +66,7 @@ export function ClientTable({ clients, onClientClick }: ClientTableProps) {
         )
 
       default: {
-        const val = (client as never as Record<string, string>)[key] ?? '—'
+        const val = (client as never as Record<string, string>)[key] ?? '-'
         return (
           <span title={val} className='text-[15px] text-text block max-w-[120px] truncate'>
             {val}

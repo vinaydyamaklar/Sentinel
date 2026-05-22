@@ -1,5 +1,6 @@
 import { Badge } from '../atoms/Badge'
 import { Button } from '../atoms/Button'
+import { FIELD_LABELS } from '../../lib/constants'
 import type { Client, RiskLevel, KYCStatus } from '../../types/client'
 
 interface ClientDetailProps {
@@ -27,7 +28,7 @@ function FieldRow({ label, value }: FieldRowProps) {
   return (
     <div className='flex flex-col gap-0.5 py-3 border-b border-neutral/10 last:border-0'>
       <span className='text-xs font-medium text-neutral uppercase tracking-wide'>{label}</span>
-      <span className='text-sm text-text'>{value ?? '—'}</span>
+      <span className='text-sm text-text'>{value ?? '-'}</span>
     </div>
   )
 }
@@ -47,13 +48,13 @@ export function ClientDetail({ client, onBack }: ClientDetailProps) {
             <span className='text-xs font-medium text-neutral uppercase'>Risk</span>
             {client.riskClassification
               ? <Badge label={client.riskClassification} variant={riskVariant[client.riskClassification]} />
-              : <span className='text-neutral text-xs'>—</span>}
+              : <span className='text-neutral text-xs'>-</span>}
           </div>
           <div className='flex items-center gap-2'>
             <span className='text-xs font-medium text-neutral uppercase'>KYC</span>
             {client.kycStatus
               ? <Badge label={client.kycStatus.replace(/_/g, ' ')} variant={kycVariant[client.kycStatus]} />
-              : <span className='text-neutral text-xs'>—</span>}
+              : <span className='text-neutral text-xs'>-</span>}
           </div>
           <div className='flex items-center gap-2'>
             <span className='text-xs font-medium text-neutral uppercase'>Record</span>
@@ -92,7 +93,7 @@ export function ClientDetail({ client, onBack }: ClientDetailProps) {
         <div className='bg-card rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.08)]'>
           <h3 className='text-[18px] font-semibold text-text mb-2'>Risk Audit Trail</h3>
           {client.riskExplanation.length === 0 ? (
-            <p className='text-sm text-neutral'>No risk triggers — classified LOW by default.</p>
+            <p className='text-sm text-neutral'>No risk triggers, classified LOW by default.</p>
           ) : (
             <div className='flex flex-col gap-2'>
               {client.riskExplanation.map((exp, i) => (
@@ -112,7 +113,7 @@ export function ClientDetail({ client, onBack }: ClientDetailProps) {
             <div className='flex flex-wrap gap-2'>
               {client.missingFields.map(field => (
                 <span key={field} className='text-xs bg-error/10 text-error px-2 py-1 rounded'>
-                  {field}
+                  {FIELD_LABELS[field] ?? field}
                 </span>
               ))}
             </div>
