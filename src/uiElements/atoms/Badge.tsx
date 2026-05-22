@@ -12,7 +12,10 @@ export function Badge({ label, variant }: BadgeProps) {
   }
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${variants[variant]}`}>
+    <span
+      title={label}
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium max-w-[110px] truncate ${variants[variant]}`}
+    >
       {label}
     </span>
   )

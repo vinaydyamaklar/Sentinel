@@ -2,13 +2,15 @@ import { createContext, useContext, useState, useCallback } from 'react'
 import { loadClients } from '../lib/storage'
 import type { Client } from '../types/client'
 
-type View = 'upload' | 'dashboard' | 'new-client' | 'client-detail'
+type View = 'dashboard' | 'client-detail'
 
 interface AppState {
   view: View
   clients: Client[]
   selectedClient: Client | null
   selectedBranch: string
+  isUploadOpen: boolean
+  isNewClientOpen: boolean
 }
 
 interface AppHandlers {
@@ -17,6 +19,8 @@ interface AppHandlers {
   onClientClick: (client: Client) => void
   onNewClient: () => void
   onUpload: () => void
+  onCloseUpload: () => void
+  onCloseNewClient: () => void
   onBack: () => void
   onBranchChange: (branch: string) => void
 }
@@ -54,6 +58,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [clients, setClients]               = useState<Client[]>(loadClients)
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
   const [selectedBranch, setSelectedBranch] = useState<string>(getBranchFromURL)
+  const [isUploadOpen, setIsUploadOpen]     = useState(false)
+  const [isNewClientOpen, setIsNewClientOpen] = useState(false)
 
   const refreshClients = useCallback(() => setClients(loadClients()), [])
 
@@ -65,12 +71,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const handlers: AppHandlers = {
     onUploadComplete: useCallback(() => {
       refreshClients()
-      setView('dashboard')
+      setIsUploadOpen(false)
     }, [refreshClients]),
 
     onNewClientSaved: useCallback(() => {
       refreshClients()
-      setView('dashboard')
+      setIsNewClientOpen(false)
     }, [refreshClients]),
 
     onClientClick: useCallback((client: Client) => {
@@ -78,8 +84,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setView('client-detail')
     }, []),
 
-    onNewClient: useCallback(() => setView('new-client'), []),
-    onUpload:    useCallback(() => setView('upload'), []),
+    onNewClient:      useCallback(() => setIsNewClientOpen(true), []),
+    onUpload:         useCallback(() => setIsUploadOpen(true), []),
+    onCloseUpload:    useCallback(() => setIsUploadOpen(false), []),
+    onCloseNewClient: useCallback(() => setIsNewClientOpen(false), []),
 
     onBack: useCallback(() => {
       setSelectedClient(null)
@@ -94,6 +102,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     clients: selectedBranch ? clients.filter(c => c.branch === selectedBranch) : clients,
     selectedClient,
     selectedBranch,
+    isUploadOpen,
+    isNewClientOpen,
   }
 
   return (

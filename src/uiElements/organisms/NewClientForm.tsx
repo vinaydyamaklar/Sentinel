@@ -121,102 +121,94 @@ export function NewClientForm({ onSaved, onCancel }: NewClientFormProps) {
   }
 
   return (
-    <div className='min-h-screen bg-background p-6'>
-      <div className='max-w-3xl mx-auto flex flex-col gap-6'>
+    <div className='flex flex-col gap-4'>
 
-        <div className='flex items-center justify-between'>
-          <h2 className='text-[26px] font-bold text-primary'>New Client Assessment</h2>
-          <Button variant='secondary' onClick={onCancel}>Cancel</Button>
-        </div>
+      <div className='bg-neutral/10 rounded-lg p-3 flex items-center gap-4'>
+        <span className='text-sm font-medium text-text'>Live Risk:</span>
+        <Badge label={level} variant={riskVariant[level]} />
+        {explanations.length > 0 && (
+          <span className='text-xs text-neutral'>
+            {explanations.map(e => e.field).join(', ')}
+          </span>
+        )}
+      </div>
 
-        <div className='bg-card rounded-lg p-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)] flex items-center gap-4'>
-          <span className='text-sm font-medium text-text'>Live Risk Classification:</span>
-          <Badge label={level} variant={riskVariant[level]} />
-          {explanations.length > 0 && (
-            <span className='text-xs text-neutral'>
-              {explanations.map(e => e.field).join(', ')}
-            </span>
-          )}
-        </div>
+      <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 
-        <div className='bg-card rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.08)] grid grid-cols-2 gap-4'>
+        <FormField type='input' label='Client ID' required
+          inputProps={{ value: form.clientId, onChange: set('clientId') }}
+          error={errors.clientId} />
 
-          <FormField type='input' label='Client ID' required
-            inputProps={{ value: form.clientId, onChange: set('clientId') }}
-            error={errors.clientId} />
+        <FormField type='input' label='Full Name' required
+          inputProps={{ value: form.clientName, onChange: set('clientName') }}
+          error={errors.clientName} />
 
-          <FormField type='input' label='Full Name' required
-            inputProps={{ value: form.clientName, onChange: set('clientName') }}
-            error={errors.clientName} />
+        <FormField type='select' label='Branch' required
+          options={BRANCHES.map(b => ({ label: b, value: b }))}
+          selectProps={{ value: form.branch, onChange: set('branch') }}
+          error={errors.branch} />
 
-          <FormField type='select' label='Branch' required
-            options={BRANCHES.map(b => ({ label: b, value: b }))}
-            selectProps={{ value: form.branch, onChange: set('branch') }}
-            error={errors.branch} />
+        <FormField type='input' label='Onboarding Date' required
+          inputProps={{ type: 'date', value: form.onboardingDate, onChange: set('onboardingDate') }}
+          error={errors.onboardingDate} />
 
-          <FormField type='input' label='Onboarding Date' required
-            inputProps={{ type: 'date', value: form.onboardingDate, onChange: set('onboardingDate') }}
-            error={errors.onboardingDate} />
+        <FormField type='input' label='Relationship Manager' required
+          inputProps={{ value: form.relationshipManager, onChange: set('relationshipManager') }}
+          error={errors.relationshipManager} />
 
-          <FormField type='input' label='Relationship Manager' required
-            inputProps={{ value: form.relationshipManager, onChange: set('relationshipManager') }}
-            error={errors.relationshipManager} />
+        <FormField type='select' label='Client Type' required
+          options={[{ label: 'Individual', value: 'INDIVIDUAL' }, { label: 'Entity', value: 'ENTITY' }]}
+          selectProps={{ value: form.clientType, onChange: set('clientType') }}
+          error={errors.clientType} />
 
-          <FormField type='select' label='Client Type' required
-            options={[{ label: 'Individual', value: 'INDIVIDUAL' }, { label: 'Entity', value: 'ENTITY' }]}
-            selectProps={{ value: form.clientType, onChange: set('clientType') }}
-            error={errors.clientType} />
+        <FormField type='input' label='Country of Tax Residence' required
+          inputProps={{ value: form.countryOfTaxResidence, onChange: set('countryOfTaxResidence') }}
+          error={errors.countryOfTaxResidence} />
 
-          <FormField type='input' label='Country of Tax Residence' required
-            inputProps={{ value: form.countryOfTaxResidence, onChange: set('countryOfTaxResidence') }}
-            error={errors.countryOfTaxResidence} />
+        <FormField type='input' label='Annual Income (£)' required
+          inputProps={{ type: 'number', value: form.annualIncome, onChange: set('annualIncome') }}
+          error={errors.annualIncome} />
 
-          <FormField type='input' label='Annual Income (£)' required
-            inputProps={{ type: 'number', value: form.annualIncome, onChange: set('annualIncome') }}
-            error={errors.annualIncome} />
+        <FormField type='select' label='Source of Funds' required
+          options={SOURCE_OF_FUNDS.map(s => ({ label: s, value: s }))}
+          selectProps={{ value: form.sourceOfFunds, onChange: set('sourceOfFunds') }}
+          error={errors.sourceOfFunds} />
 
-          <FormField type='select' label='Source of Funds' required
-            options={SOURCE_OF_FUNDS.map(s => ({ label: s, value: s }))}
-            selectProps={{ value: form.sourceOfFunds, onChange: set('sourceOfFunds') }}
-            error={errors.sourceOfFunds} />
+        <FormField type='select' label='PEP Status' required
+          options={boolOptions}
+          selectProps={{ value: form.pepStatus, onChange: set('pepStatus') }}
+          error={errors.pepStatus} />
 
-          <FormField type='select' label='PEP Status' required
-            options={boolOptions}
-            selectProps={{ value: form.pepStatus, onChange: set('pepStatus') }}
-            error={errors.pepStatus} />
+        <FormField type='select' label='Sanctions Screening Match' required
+          options={boolOptions}
+          selectProps={{ value: form.sanctionsScreeningMatch, onChange: set('sanctionsScreeningMatch') }}
+          error={errors.sanctionsScreeningMatch} />
 
-          <FormField type='select' label='Sanctions Screening Match' required
-            options={boolOptions}
-            selectProps={{ value: form.sanctionsScreeningMatch, onChange: set('sanctionsScreeningMatch') }}
-            error={errors.sanctionsScreeningMatch} />
+        <FormField type='select' label='Adverse Media Flag' required
+          options={boolOptions}
+          selectProps={{ value: form.adverseMediaFlag, onChange: set('adverseMediaFlag') }}
+          error={errors.adverseMediaFlag} />
 
-          <FormField type='select' label='Adverse Media Flag' required
-            options={boolOptions}
-            selectProps={{ value: form.adverseMediaFlag, onChange: set('adverseMediaFlag') }}
-            error={errors.adverseMediaFlag} />
+        <FormField type='select' label='KYC Status' required
+          options={KYC_STATUSES.map(s => ({ label: s.replace(/_/g, ' '), value: s }))}
+          selectProps={{ value: form.kycStatus, onChange: set('kycStatus') }}
+          error={errors.kycStatus} />
 
-          <FormField type='select' label='KYC Status' required
-            options={KYC_STATUSES.map(s => ({ label: s.replace(/_/g, ' '), value: s }))}
-            selectProps={{ value: form.kycStatus, onChange: set('kycStatus') }}
-            error={errors.kycStatus} />
+        <FormField type='input' label='ID Verification Date'
+          inputProps={{ type: 'date', value: form.idVerificationDate, onChange: set('idVerificationDate') }}
+          error={errors.idVerificationDate} />
 
-          <FormField type='input' label='ID Verification Date'
-            inputProps={{ type: 'date', value: form.idVerificationDate, onChange: set('idVerificationDate') }}
-            error={errors.idVerificationDate} />
-
-          <FormField type='select' label='Documentation Complete' required
-            options={boolOptions}
-            selectProps={{ value: form.documentationComplete, onChange: set('documentationComplete') }}
-            error={errors.documentationComplete} />
-
-        </div>
-
-        <div className='flex justify-end gap-3'>
-          <Button variant='secondary' onClick={onCancel}>Cancel</Button>
-          <Button onClick={handleSubmit}>Save Assessment</Button>
-        </div>
+        <FormField type='select' label='Documentation Complete' required
+          options={boolOptions}
+          selectProps={{ value: form.documentationComplete, onChange: set('documentationComplete') }}
+          error={errors.documentationComplete} />
 
       </div>
+
+      <div className='flex justify-end'>
+        <Button onClick={handleSubmit}>Save Assessment</Button>
+      </div>
+
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Select } from '../atoms/Select'
+import { Dropdown } from '../atoms/Dropdown'
 
 interface FilterDropdownProps {
   label: string
@@ -11,10 +11,10 @@ export function FilterDropdown({ label, value, options, onChange }: FilterDropdo
   const allOptions = [{ label: `All ${label}`, value: '' }, ...options]
 
   return (
-    <Select
+    <Dropdown
       value={value}
       options={allOptions}
-      onChange={e => onChange(e.target.value)}
+      onChange={onChange}
     />
   )
 }

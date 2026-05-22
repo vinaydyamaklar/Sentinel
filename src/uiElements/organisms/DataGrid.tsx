@@ -5,6 +5,7 @@ import { DEFAULT_PAGE_SIZE } from '../../lib/constants'
 interface Column {
   key: string
   header: string
+  width?: string
 }
 
 interface DataGridProps<T> {
@@ -38,25 +39,25 @@ export function DataGrid<T>({ data, columns, renderCell, onRowClick, rowKey }: D
 
   return (
     <div className='flex flex-col'>
-      <div className='overflow-x-auto'>
-        <table className='w-full'>
-          <thead className='sticky top-0 z-10'>
-            <tr className='bg-background border-b border-neutral/20'>
+      <div className='overflow-x-auto overflow-y-auto max-h-[520px]'>
+        <table className='w-full table-fixed'>
+          <colgroup>
+            {columns.map(col => (
+              <col key={col.key} style={col.width ? { width: col.width } : undefined} />
+            ))}
+          </colgroup>
+          <thead className='sticky top-0 z-10 bg-background'>
+            <tr className='border-b border-neutral/20'>
               {columns.map(col => (
                 <th
                   key={col.key}
-                  className='px-4 py-3 text-left text-xs font-medium text-neutral uppercase tracking-wide'
+                  className='px-4 py-3 text-left text-xs font-medium text-neutral uppercase tracking-wide whitespace-nowrap'
                 >
                   {col.header}
                 </th>
               ))}
             </tr>
           </thead>
-        </table>
-      </div>
-
-      <div className='overflow-y-auto max-h-[520px]'>
-        <table className='w-full'>
           <tbody>
             {visible.map((row, i) => (
               <tr
@@ -66,7 +67,7 @@ export function DataGrid<T>({ data, columns, renderCell, onRowClick, rowKey }: D
                   ${i % 2 === 0 ? 'bg-card' : 'bg-background/50'}`}
               >
                 {columns.map(col => (
-                  <td key={col.key} className='px-4 py-3'>
+                  <td key={col.key} className='px-4 py-3 whitespace-nowrap'>
                     {renderCell(col.key, row)}
                   </td>
                 ))}

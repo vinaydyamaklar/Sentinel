@@ -45,26 +45,17 @@ export function UploadPanel({ onUploadComplete }: UploadPanelProps) {
   }
 
   return (
-    <div className='min-h-screen bg-background flex items-center justify-center p-6'>
-      <div className='w-full max-w-2xl flex flex-col gap-6'>
-        <div className='text-center'>
-          <h1 className='text-[26px] font-bold text-primary'>Halcyon Capital Partners</h1>
-          <p className='text-sm text-neutral mt-1'>SENTINEL Onboarding — Import Client Records</p>
-        </div>
-
-        {status === 'idle' && (
-          <>
-            <FileUploadZone onFileSelect={handleFileSelect} />
-            {error && <p className='text-sm text-error text-center'>{error}</p>}
-          </>
-        )}
-
-        {status === 'parsing' && <Spinner />}
-
-        {status === 'done' && (
-          <ValidationSummary clients={clients} onContinue={onUploadComplete} />
-        )}
-      </div>
+    <div className='flex flex-col gap-4'>
+      {status === 'idle' && (
+        <>
+          <FileUploadZone onFileSelect={handleFileSelect} />
+          {error && <p className='text-sm text-error text-center'>{error}</p>}
+        </>
+      )}
+      {status === 'parsing' && <Spinner />}
+      {status === 'done' && (
+        <ValidationSummary clients={clients} onContinue={onUploadComplete} />
+      )}
     </div>
   )
 }

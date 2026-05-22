@@ -29,13 +29,13 @@ const riskOptions = [
 ]
 
 const columns = [
-  { key: 'clientId',           header: 'Client ID'  },
-  { key: 'clientName',         header: 'Name'        },
-  { key: 'branch',             header: 'Branch'      },
-  { key: 'onboardingDate',     header: 'Date'        },
-  { key: 'riskClassification', header: 'Risk'        },
-  { key: 'kycStatus',          header: 'KYC Status'  },
-  { key: 'recordStatus',       header: 'Record'      },
+  { key: 'clientId',           header: 'Client ID',  width: '110px' },
+  { key: 'clientName',         header: 'Name',        width: '170px' },
+  { key: 'branch',             header: 'Branch',      width: '130px' },
+  { key: 'onboardingDate',     header: 'Date',        width: '120px' },
+  { key: 'riskClassification', header: 'Risk',        width: '100px' },
+  { key: 'kycStatus',          header: 'KYC Status',  width: '150px' },
+  { key: 'recordStatus',       header: 'Record',      width: '110px' },
 ]
 
 export function ClientTable({ clients, onClientClick }: ClientTableProps) {
@@ -65,14 +65,21 @@ export function ClientTable({ clients, onClientClick }: ClientTableProps) {
           />
         )
 
-      default:
-        return <span className='text-sm text-text'>{(client as never as Record<string, string>)[key] ?? '—'}</span>
+      default: {
+        const val = (client as never as Record<string, string>)[key] ?? '—'
+        return (
+          <span title={val} className='text-sm text-text block max-w-[120px] truncate'>
+            {val}
+          </span>
+        )
+      }
     }
   }
 
   return (
     <div className='bg-card rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.08)]'>
-      <div className='flex items-center p-4 border-b border-neutral/20'>
+      <div className='flex flex-col items-start gap-1.5 p-4 border-b border-neutral/20'>
+        <span className='text-xs text-neutral font-medium uppercase tracking-wide'>Filter by Risk</span>
         <div className='flex items-center bg-neutral/15 rounded-lg p-1 gap-0.5'>
           {riskOptions.map(opt => (
             <button

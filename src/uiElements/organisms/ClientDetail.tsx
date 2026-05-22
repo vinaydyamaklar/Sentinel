@@ -34,7 +34,7 @@ function FieldRow({ label, value }: FieldRowProps) {
 
 export function ClientDetail({ client, onBack }: ClientDetailProps) {
   return (
-    <div className='min-h-screen bg-background p-6'>
+    <div className='p-6'>
       <div className='max-w-3xl mx-auto flex flex-col gap-6'>
 
         <div className='flex items-center justify-between'>

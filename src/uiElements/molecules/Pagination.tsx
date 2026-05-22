@@ -22,18 +22,18 @@ export function Pagination({ totalItems, currentPage, pageSize, onPageChange, on
   }
 
   return (
-    <div className='flex items-center justify-between px-4 py-3 border-t border-neutral/20'>
+    <div className='flex flex-wrap items-center justify-center sm:justify-between gap-2 px-4 py-3 border-t border-neutral/20'>
       <div className='flex items-center gap-2 text-sm text-neutral'>
-        <span>Rows per page:</span>
+        <span className='whitespace-nowrap'>Rows per page:</span>
         <input
           type='number'
           min={1}
           max={totalItems}
           value={pageSize}
           onChange={handleSizeChange}
-          className='w-16 border border-neutral/40 rounded px-2 py-1 text-sm bg-card text-text text-center focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]'
+          className='w-14 border border-neutral/40 rounded px-2 py-1 text-sm bg-card text-text text-center focus:outline-none focus:ring-2 focus:ring-primary'
         />
-        <span>{totalItems} total</span>
+        <span className='whitespace-nowrap'>{totalItems} total</span>
       </div>
 
       <div className='flex items-center gap-2'>
@@ -45,7 +45,7 @@ export function Pagination({ totalItems, currentPage, pageSize, onPageChange, on
         >
           ←
         </Button>
-        <span className='text-sm text-text font-medium'>
+        <span className='text-sm text-text font-medium whitespace-nowrap'>
           {currentPage} / {totalPages}
         </span>
         <Button
