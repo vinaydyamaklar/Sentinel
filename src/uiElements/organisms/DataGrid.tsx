@@ -51,7 +51,7 @@ export function DataGrid<T>({ data, columns, renderCell, onRowClick, rowKey }: D
               {columns.map(col => (
                 <th
                   key={col.key}
-                  className='px-4 py-3 text-left text-xs font-medium text-neutral uppercase tracking-wide whitespace-nowrap'
+                  className='px-4 py-3 text-left text-[13px] font-medium text-neutral uppercase tracking-wide whitespace-nowrap'
                 >
                   {col.header}
                 </th>

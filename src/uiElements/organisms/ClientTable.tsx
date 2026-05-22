@@ -68,7 +68,7 @@ export function ClientTable({ clients, onClientClick }: ClientTableProps) {
       default: {
         const val = (client as never as Record<string, string>)[key] ?? '—'
         return (
-          <span title={val} className='text-sm text-text block max-w-[120px] truncate'>
+          <span title={val} className='text-[15px] text-text block max-w-[120px] truncate'>
             {val}
           </span>
         )
